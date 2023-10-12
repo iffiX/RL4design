@@ -35,7 +35,9 @@ Finally, just run `install.sh`, or copy commands to your terminal and execute th
 
 ## Start training
 
-To customize configurations for training, go to `config.py` under each experiment directory, then
+We have tested the program on NVIDIA 10 series (1080Ti), 30 series (RTX 3060) and 40 series (RTX4080, H100) GPUs. GPUs
+earlier than 10 series are not supported. To customize configurations for training, go to `config.py` under each
+experiment directory, then
 start training with following commands:
 
 ```bash
