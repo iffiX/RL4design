@@ -3,6 +3,12 @@
 This git repo contains the code used
 for [Reinforcement learning for freeform robot design](https://arxiv.org/abs/2310.05670).
 
+![summary.png](images%2Fsummary.png)
+
+| Generation process               | Result                           |
+|----------------------------------|----------------------------------|
+| ![robot.gif](images%2Frobot.gif) | ![robot.png](images%2Frobot.png) |
+
 ## Bibtex
 
 ```Bibtex
