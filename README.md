@@ -12,13 +12,11 @@ for [Reinforcement learning for freeform robot design](https://arxiv.org/abs/231
 ## Bibtex
 
 ```Bibtex
-@misc{li2023reinforcement,
-      title={Reinforcement learning for freeform robot design}, 
-      author={Muhan Li and David Matthews and Sam Kriegman},
-      year={2023},
-      eprint={2310.05670},
-      archivePrefix={arXiv},
-      primaryClass={cs.RO}
+@article{li2023reinforcement,
+  title={Reinforcement learning for freeform robot design},
+  author={Muhan Li and David Matthews and Sam Kriegman},
+  journal={arXiv preprint arXiv:2310.05670},
+  year={2023}
 }
 ```
 
