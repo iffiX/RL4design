@@ -11,10 +11,8 @@ from renesis.utils.voxcraft import (
     get_center_of_mass,
 )
 from renesis.utils.metrics import (
-    max_z,
     distance_traveled,
     distance_traveled_of_com,
-    has_fallen,
 )
 from renesis.utils.debug import enable_debugger
 from renesis.env.utils import normalize
@@ -250,7 +248,6 @@ class VoxcraftSingleRewardBaseEnvironmentForVecEnvModel(VectorEnv):
         """
         Note: reward should always have an initial value of 0 for empty robots.
 
-        max_z: optimize for maximize the max z value of all voxels at end
         distance_traveled: optimize for maximize the max distance of all voxels
             from their start position to end position
         distance_traveled_com: use center of mass to measure distance instead of
@@ -259,17 +256,7 @@ class VoxcraftSingleRewardBaseEnvironmentForVecEnvModel(VectorEnv):
             in the x-axis.
         """
         rewards = []
-        if self.reward_type == "max_z":
-            for start_pos, end_pos in zip(all_start_pos, all_end_pos):
-                if (
-                    has_fallen(start_pos, end_pos, self.fallen_threshold)
-                    or start_pos is None
-                ):
-                    reward = 0
-                else:
-                    reward = max_z(end_pos)
-                rewards.append(reward)
-        elif self.reward_type == "distance_traveled":
+        if self.reward_type == "distance_traveled":
             for start_pos, end_pos in zip(all_start_pos, all_end_pos):
                 if start_pos is None:
                     reward = 0

@@ -1,35 +1,6 @@
 import zlib
 import cc3d
 import numpy as np
-from scipy.spatial import ConvexHull
-from renesis.utils.plotter import Plotter
-
-
-def max_z(end_positions):
-    _, max_z = get_min_max_z(end_positions)
-    return max_z
-
-
-def get_min_max_z(end_positions):
-    max_z = -np.inf
-    min_z = np.inf
-    for p in end_positions:
-        if p[2] > max_z:
-            max_z = p[2]
-        if p[2] < min_z:
-            min_z = p[2]
-    return min_z, max_z
-
-
-def prepare_points_for_convex_hull(x):
-    q = set()
-    for p in x:
-        q.add(p)
-        q.add((p[0] + 1, p[1]))
-        q.add((p[0], p[1] + 1))
-        q.add((p[0] + 1, p[1] + 1))
-    x = list(q)
-    return x
 
 
 def get_bounding_box_sizes(X):
@@ -46,39 +17,6 @@ def get_bounding_box_sizes(X):
     return max_x - min_x, max_y - min_y, max_z - min_z
 
 
-def get_convex_hull_area(x):
-    x = prepare_points_for_convex_hull(x)
-    if len(x) == 0:
-        return 0
-    if len(x) == 1:
-        return 0
-    if len(x) == 2:
-        return np.sqrt((x[0][0] - x[0][1]) ** 2 + (x[1][0] - x[1][1]) ** 2)
-
-    return ConvexHull(x).volume
-
-
-def get_convex_hull_volume(x):
-    if len(x) == 0:
-        return 0
-    x, _, _ = Plotter.get_vertices_of_voxel(x)
-    return ConvexHull(x).volume
-
-
-def max_hull_volume_min_density(x):
-    if len(x) == 0:
-        return 0
-    return get_convex_hull_volume(x) / len(x)
-
-
-def has_fallen(start_positions, end_positions, threshold=0.25):
-    # ! Incorrect
-    Z_initial = np.array(start_positions)[:, :2]
-    Z_final = np.array(end_positions)[:, :2]
-    difference = np.abs(Z_final - Z_initial)
-    return np.any(difference >= threshold)
-
-
 def distance_traveled_of_com(start_com, end_com):
     # start_com and end_com shape: [voxel_num, 3]
     return np.linalg.norm(end_com[:2] - start_com[:2]).mean()
@@ -89,22 +27,6 @@ def distance_traveled(start_pos, end_pos):
     return np.linalg.norm(
         np.array(start_pos)[:, :2] - np.array(end_pos)[:, :2], axis=1
     ).max()
-
-
-def max_volume(X):
-    s = get_surface_area(X)
-    v = get_volume(X)
-    if v == 0 or s == 0:
-        return 0
-    return v / s
-
-
-def max_surface_area(X):
-    s = get_surface_area(X)
-    v = get_volume(X)
-    if v == 0 or s == 0:
-        return 0
-    return s / v
 
 
 def get_volume(X):

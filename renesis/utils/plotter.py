@@ -339,7 +339,10 @@ class Plotter:
                     {vtk.VTK_HEXAHEDRON: same_cells_hex}, same_points
                 )
                 plotter.add_mesh(
-                    same_grid, show_edges=True, color="black", opacity=0.5,
+                    same_grid,
+                    show_edges=True,
+                    color="black",
+                    opacity=0.5,
                 )
 
             diff_origins, diff_materials = self.voxel_array_to_origin_and_material(diff)
@@ -356,7 +359,10 @@ class Plotter:
                     {vtk.VTK_HEXAHEDRON: diff_cells_hex}, diff_points
                 )
                 plotter.add_mesh(
-                    diff_grid, show_edges=True, color="yellow", opacity=0.9,
+                    diff_grid,
+                    show_edges=True,
+                    color="yellow",
+                    opacity=0.9,
                 )
 
             plotter.add_floor("-z")
@@ -402,7 +408,8 @@ class Plotter:
         missing = np.logical_and(voxel_ref != 0, voxel_input == 0)
         excessive = np.logical_and(voxel_ref == 0, voxel_input != 0)
         wrong = np.logical_and(
-            np.logical_and(voxel_ref != 0, voxel_input != 0), voxel_ref != voxel_input,
+            np.logical_and(voxel_ref != 0, voxel_input != 0),
+            voxel_ref != voxel_input,
         )
         voxel_error = np.zeros_like(voxel_ref)
         voxel_error[missing] = 1
@@ -439,16 +446,6 @@ class Plotter:
         #    |   |
         #    -----
         # p1 (x)   p2
-        p1, p2, p3, p4 = (
-            origin.copy(),
-            origin.copy(),
-            origin.copy(),
-            origin.copy(),
-        )
-        p2[:, 0] += 1
-        p3[:, 0] += 1
-        p3[:, 1] += 1
-        p4[:, 1] += 1
 
         # Upper level.
         # p8       p7
@@ -456,28 +453,24 @@ class Plotter:
         #    |   |
         #    -----
         # p5       p6
-        p5 = origin.copy()
-        p5[:, 2] += 1
-        p6, p7, p8 = (
-            p5.copy(),
-            p5.copy(),
-            p5.copy(),
-        )
-        p6[:, 0] += 1
-        p7[:, 0] += 1
-        p7[:, 1] += 1
-        p8[:, 1] += 1
 
         # Weave the eight coordinates of the voxel together.
         num_vertices = n * 8
         points = np.empty((num_vertices, 3), dtype=origin.dtype)
-        points[0::8, :] = p1
-        points[1::8, :] = p2
-        points[2::8, :] = p3
-        points[3::8, :] = p4
-        points[4::8, :] = p5
-        points[5::8, :] = p6
-        points[6::8, :] = p7
-        points[7::8, :] = p8
+        offset = np.array(
+            [
+                [0, 0, 0],
+                [1, 0, 0],
+                [1, 1, 0],
+                [0, 1, 0],
+                [0, 0, 1],
+                [1, 0, 1],
+                [1, 1, 1],
+                [0, 1, 1],
+            ]
+        )
+        for i in range(8):
+            vertex = origin.copy()
+            points[i::8, :] = vertex + offset[i : i + 1]
 
         return points.astype(float), n, num_vertices
