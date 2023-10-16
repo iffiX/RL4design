@@ -3,7 +3,19 @@ import cc3d
 import numpy as np
 
 
-def get_bounding_box_sizes(X):
+def distance_traveled_of_com(start_com: np.ndarray, end_com: np.ndarray):
+    # start_com and end_com shape: [voxel_num, 3]
+    return np.linalg.norm(end_com[:2] - start_com[:2]).mean()
+
+
+def distance_traveled(start_pos: np.ndarray, end_pos: np.ndarray):
+    # start_pos and end_pos shape: [voxel_num, 3]
+    return np.linalg.norm(
+        np.array(start_pos)[:, :2] - np.array(end_pos)[:, :2], axis=1
+    ).max()
+
+
+def get_bounding_box_sizes(X: np.ndarray):
     occupied = X != 0
     x_occupied = [x for x in range(occupied.shape[0]) if np.any(occupied[x])]
     y_occupied = [y for y in range(occupied.shape[1]) if np.any(occupied[:, y])]
@@ -17,23 +29,11 @@ def get_bounding_box_sizes(X):
     return max_x - min_x, max_y - min_y, max_z - min_z
 
 
-def distance_traveled_of_com(start_com, end_com):
-    # start_com and end_com shape: [voxel_num, 3]
-    return np.linalg.norm(end_com[:2] - start_com[:2]).mean()
-
-
-def distance_traveled(start_pos, end_pos):
-    # start_pos and end_pos shape: [voxel_num, 3]
-    return np.linalg.norm(
-        np.array(start_pos)[:, :2] - np.array(end_pos)[:, :2], axis=1
-    ).max()
-
-
-def get_volume(X):
+def get_volume(X: np.ndarray):
     return np.sum(X != 0)
 
 
-def pad_voxels(X):
+def pad_voxels(X: np.ndarray):
     new_voxels = np.zeros(
         (X.shape[0] + 2, X.shape[1] + 2, X.shape[2] + 2), dtype=X.dtype
     )
@@ -41,7 +41,7 @@ def pad_voxels(X):
     return new_voxels
 
 
-def get_surface_voxels(X):
+def get_surface_voxels(X: np.ndarray):
     if X.shape[0] > 2 and X.shape[1] > 2 and X.shape[2] > 2:
         padded_X = pad_voxels(X)
         coords = np.stack(
@@ -74,7 +74,7 @@ def get_surface_voxels(X):
         return get_volume(X)
 
 
-def get_surface_area(X):
+def get_surface_area(X: np.ndarray):
     padded_X = pad_voxels(X)
 
     coords = np.stack(
@@ -102,7 +102,7 @@ def get_surface_area(X):
     return surfaces
 
 
-def get_section_num(X):
+def get_section_num(X: np.ndarray):
     X = np.copy(X)
     X[X == 0] = X.max() + 1
     _labels, label_num = cc3d.connected_components(
@@ -111,7 +111,7 @@ def get_section_num(X):
     return label_num
 
 
-def get_reflection_symmetry(X):
+def get_reflection_symmetry(X: np.ndarray):
     # Note: this function is based on the assumption that
     # voxels X are symmetric with respect to the mid
     # cross section plane in each direction. Mid plane is
